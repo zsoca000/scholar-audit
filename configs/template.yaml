@@ -1,0 +1,83 @@
+# Study Configuration Template
+study_name: "constitutive_history_shift"
+
+# 1. Discovery Phase (Search, BibTeX seeds & Citation Snowballing)
+discovery:
+  queries:
+    - >-
+      "constitutive" 
+      AND ("surrogate" OR "neural network" OR "recurrent") 
+      AND ("path-dependent" OR "plasticity")
+    - >-
+      ("load path" OR "strain path" OR "loading protocol") 
+      AND ("random walk" OR "multisine" OR "gaussian process") 
+      AND "constitutive"
+    - >-
+      ("covariate shift" OR "out-of-distribution" OR "generalization") 
+      AND ("constitutive" OR "stress-strain") 
+      AND "machine learning"
+
+  seed_bib: "configs/sample.bib"
+  seed_dois: []
+  min_year: 2018
+  max_results_per_query: 50
+  cache_ttl_hours: 24
+
+  snowball:
+    depth: 1
+    max_citations_per_seed: 10
+    max_references_per_seed: 10
+
+# 2. Triage Phase (Fast abstract screening with prompts/agents/triage_agent.md)
+triage:
+  criteria: >
+    Keep papers that develop or benchmark neural network surrogate models (RNN, GRU,
+    LSTM, Transformer, Neural ODE, TINN, PINN) for path-dependent / history-dependent
+    materials (elastoplasticity, viscoplasticity, cyclic deformation), mapping strain history
+    to stress. Prioritize papers discussing training load-path generation or generalization.
+    Exclude path-independent elasticity/hyperelasticity, static property prediction, and
+    microstructure image classification.
+  relevance_threshold: 0.7
+
+# 3. Extraction Phase: 3 Fundamental Scientific Dilemmas
+extraction:
+  pdf_source: "C:/Users/rdsup/Workspace/03_resources/papers/History Shift Cikk"
+  schema:
+    # DILEMMA 1: Data Generation Dilemma
+    - id: "data_generation_method"
+      description: >-
+        What exact method or protocol is used to generate training strain/stress paths?
+        (e.g. 1D/3D random walk, Gaussian process, multisine, monotonic/cyclic hand-crafted steps, 
+        RVE/FEM micromechanical simulations, or physical experiments).
+      type: "string"
+    - id: "generator_bias_acknowledged"
+      description: >-
+        Do the authors explicitly acknowledge and discuss the generator's inherent bias / covariate shift 
+        (e.g., that synthetic loading protocols might not represent realistic structural strain paths), 
+        or is this limitation completely omitted/silent? ('ACKNOWLEDGED' vs 'SILENT_OR_OMITTED').
+      type: "string"
+
+    # DILEMMA 2: Architecture Dilemma & GRU Standing
+    - id: "surrogate_architecture"
+      description: >-
+        What specific ML architecture is proposed/benchmarked? (e.g. GRU, LSTM, RNN, Transformer, 
+        Neural ODE, TINN, PINN, DeepONet, FNO). State the exact variant.
+      type: "string"
+    - id: "recurrent_gru_role"
+      description: >-
+        How are recurrent networks (specifically GRU or LSTM) treated in the paper? 
+        (e.g. 'PRIMARY_PROPOSED_MODEL', 'COMPETITIVE_BASELINE', 'DISMISSED_AS_OBSOLETE', 'NOT_MENTIONED').
+      type: "string"
+
+    # DILEMMA 3: Generalization Illusion & Genuine OOD
+    - id: "test_path_source"
+      description: >-
+        Where do the test loading paths come from? Are they sampled from the EXACT SAME generator / distribution 
+        as training data (i.e. random train/test split from same random walk/multisine - 'ECHO_CHAMBER_IID'), 
+        OR are they genuinely Out-of-Distribution (unseen complex loading types, different strain rates, 
+        multiaxial cross-validation, or real structural FE simulations - 'GENUINE_OOD')?
+      type: "string"
+    - id: "is_genuine_ood"
+      description: >-
+        Is genuine Out-of-Distribution / covariate shift evaluated? (true / false / NOT_REPORTED).
+      type: "boolean"

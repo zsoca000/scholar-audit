@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+src/*.egg-info/
+.venv/
+env/
+venv/
+.env
+
+# Cache (disposable raw network dumps, full-text PDFs, raw API responses)
+cache/
+.cache/
+
+# Output artifacts: ignore ALL generated study outputs
+output/*
+!output/.gitkeep
