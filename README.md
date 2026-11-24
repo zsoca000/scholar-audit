@@ -1,4 +1,4 @@
-# 🔬 Scholar Audit (`lit-pipeline`)
+# 🔬 Scholar Audit
 
 > **Turn hundreds of academic papers into structured evidence, verified quotes, and publication-ready synthesis reports — without the hallucination headache.**
 
